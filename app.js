@@ -31,6 +31,8 @@ db.once("open", () => {
 app.engine("hbs", exphbs({ defaultLayout: "main", extname: ".hbs" })); //設定副檔名
 app.set("view engine", "hbs");
 
+app.use(express.urlencoded({ extended: true }));
+
 app.get("/", (req, res) => {
   Todo.find() // 取出 Todo model 裡的所有資料
     .lean() // 把 Mongoose 的 Model 物件轉換成乾淨的 JavaScript 資料陣列
@@ -38,6 +40,17 @@ app.get("/", (req, res) => {
       res.render(`index`, { todos }); // 將資料傳給 index 樣板
     })
     .catch((err) => console.error(err)); // 錯誤處理
+});
+
+app.get("/todos/new", (req, res) => {
+  res.render("new");
+});
+
+app.post("/todos", (req, res) => {
+  const name = req.body.name;
+  return Todo.create({ name }) // 存入資料庫
+    .then(() => res.redirect("/")) // 新增完成後導回首頁
+    .catch((error) => console.log(error));
 });
 
 app.listen(port, () => {
