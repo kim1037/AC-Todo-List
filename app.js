@@ -46,11 +46,21 @@ app.get("/todos/new", (req, res) => {
   res.render("new");
 });
 
+// create todos
 app.post("/todos", (req, res) => {
   const name = req.body.name;
   return Todo.create({ name }) // 存入資料庫
     .then(() => res.redirect("/")) // 新增完成後導回首頁
     .catch((error) => console.log(error));
+});
+
+//show detail
+app.get("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  return Todo.findById(id)
+    .lean()
+    .then((todo) => res.render("detail", { todo }))
+    .catch((err) => console.log(err));
 });
 
 app.listen(port, () => {
