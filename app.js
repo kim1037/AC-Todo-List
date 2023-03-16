@@ -73,7 +73,7 @@ app.get("/todos/:id/edit", (req, res) => {
 });
 
 //update todos
-app.post("/todo/:id/edit", (req, res) => {
+app.post("/todos/:id/edit", (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
   return Todo.findById(id)
@@ -82,6 +82,17 @@ app.post("/todo/:id/edit", (req, res) => {
       return todo.save();
     })
     .then(() => res.redirect(`/todos/${id}`)) // 新增完成後導回首頁
+    .catch((error) => console.log(error));
+});
+
+//delete todos
+app.post("/todos/:id/delete", (req, res) => {
+  const id = req.params.id;
+  return Todo.findById(id)
+    .then((todo) => {
+      return todo.remove();
+    })
+    .then(() => res.redirect(`/`)) // 新增完成後導回首頁
     .catch((error) => console.log(error));
 });
 
