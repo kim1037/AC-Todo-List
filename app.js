@@ -24,7 +24,7 @@ db.on("error", () => {
 });
 
 db.once("open", () => {
-  console.log("connect success!");
+  console.log("MongoDB connect success!");
 });
 
 //set view template
@@ -33,6 +33,7 @@ app.set("view engine", "hbs");
 
 app.use(express.urlencoded({ extended: true }));
 
+//首頁 route
 app.get("/", (req, res) => {
   Todo.find() // 取出 Todo model 裡的所有資料
     .lean() // 把 Mongoose 的 Model 物件轉換成乾淨的 JavaScript 資料陣列
@@ -42,6 +43,7 @@ app.get("/", (req, res) => {
     .catch((err) => console.error(err)); // 錯誤處理
 });
 
+// 新增頁面
 app.get("/todos/new", (req, res) => {
   res.render("new");
 });
@@ -75,10 +77,11 @@ app.get("/todos/:id/edit", (req, res) => {
 //update todos
 app.post("/todos/:id/edit", (req, res) => {
   const id = req.params.id;
-  const name = req.body.name;
+  const { name, isDone } = req.body;
   return Todo.findById(id)
     .then((todo) => {
       todo.name = name;
+      todo.isDone = isDone === "on";
       return todo.save();
     })
     .then(() => res.redirect(`/todos/${id}`)) // 新增完成後導回首頁
@@ -92,7 +95,7 @@ app.post("/todos/:id/delete", (req, res) => {
     .then((todo) => {
       return todo.remove();
     })
-    .then(() => res.redirect(`/`)) // 新增完成後導回首頁
+    .then(() => res.redirect(`/`)) // 完成後導回首頁
     .catch((error) => console.log(error));
 });
 
