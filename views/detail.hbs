@@ -8,7 +8,7 @@
         <input type="checkbox" name="isDone" {{#if todo.isDone }} checked {{/if}} disabled>
     </div>
      <input class="form-control" type="text" placeholder="name" name="name" value="{{ todo.name }}" disabled>
-     <a class="btn btn-success" href="/todos/{{todo._id}}/edit">Edit</a>
+     <a class="btn btn-primary" href="/todos/{{todo._id}}/edit">Edit</a>
        <button class="btn btn-danger" type="submit">delete</button>
 </div>
 
