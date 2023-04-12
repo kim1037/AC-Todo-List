@@ -26,12 +26,12 @@ const users = [
   },
 ];
 
-const Users = require("../users");
+const User = require("../user");
 const db = require("../../config/mongoose");
 
 db.once("open", () => {
   console.log("MongoDB connect success!");
-  Users.create(users)
+  User.create(users)
     .then(() => console.log("done"))
     .catch((e) => console.log(e));
 });
