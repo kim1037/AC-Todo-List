@@ -4,7 +4,7 @@ const methodOverride = require("method-override");
 // 引入路由器時，路徑設定為 /routes 會自動去找目錄下的index檔
 const routes = require("./routes");
 const session = require("express-session");
-
+const usePassport = require("./config/passport");
 require("./config/mongoose");
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,14 +16,10 @@ app.engine(
     defaultLayout: "main",
     extname: ".hbs",
   })
-); //設定副檔名
+);
+//設定副檔名
 app.set("view engine", "hbs");
-
-app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride("_method"));
-//使用路由模組
-app.use(routes);
-//use session
+//use session 要放在其他use的最上方才會有connet.sid
 app.use(
   session({
     secret: "ThisIsMySecret",
@@ -31,6 +27,14 @@ app.use(
     saveUninitialized: true, //強制將未初始化的 session 存回 session store。
   })
 );
+
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
+
+// 呼叫 Passport 函式並傳入 app，這條要寫在路由之前
+usePassport(app);
+//使用路由模組
+app.use(routes);
 
 app.listen(PORT, () => {
   console.log(`Express server is running on http://localhost:3000`);
