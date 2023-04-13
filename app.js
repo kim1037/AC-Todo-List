@@ -5,6 +5,7 @@ const methodOverride = require("method-override");
 const routes = require("./routes");
 const session = require("express-session");
 const usePassport = require("./config/passport");
+const flash = require("connect-flash");
 require("./config/mongoose");
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,11 +34,13 @@ app.use(methodOverride("_method"));
 
 // 呼叫 Passport 函式並傳入 app，這條要寫在路由之前
 usePassport(app);
-// 檢查登入狀態 
+app.use(flash());
+// 檢查登入狀態
 app.use((req, res, next) => {
-  console.log(req.user)
   res.locals.isAuthenticated = req.isAuthenticated();
   res.locals.user = req.user;
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.warning_msg = req.flash("warning_msg");
   next();
 });
 //使用路由模組
