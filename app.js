@@ -8,7 +8,11 @@ const usePassport = require("./config/passport");
 const flash = require("connect-flash");
 require("./config/mongoose");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
+
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config;
+}
 
 //set view template
 app.engine(
@@ -23,7 +27,7 @@ app.set("view engine", "hbs");
 //use session 要放在其他use的最上方才會有connet.sid
 app.use(
   session({
-    secret: "ThisIsMySecret",
+    secret: process.env.SECRET,
     resave: false, //在沒有修改 session 的情況下，是否重新存儲 session 資訊
     saveUninitialized: true, //強制將未初始化的 session 存回 session store。
   })
